@@ -6,7 +6,7 @@
 #define SERVO_PIN_Y 14
 
 #include <Avatar.h>         // M5Stack用のアバターライブラリ：https://github.com/meganetaaan/m5stack-avatar
-#include <ServoEasing.hpp>   // サーボのイージング動作用ライブラリ：https://github.com/ArminJo/ServoEasing       
+#include <ServoEasing.hpp>   // サーボのイージング動作用ライブラリ：https://github.com/ArminJo/ServoEasing       c:\user\lab\開発\M5Stack\project\stack-chan\M5Core2_SG90_StackChan_VoiceText_Ataru\README.md
 #include "AtaruFace.h"       // あたるの顔データ
 #include "RamFace.h"         // ラムちゃんの顔データ
 
