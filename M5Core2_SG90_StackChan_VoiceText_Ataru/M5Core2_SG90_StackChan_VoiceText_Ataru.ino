@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <M5Unified.h>
+#include "esp_system.h"     // esp_random() 用
 
 // サーボモーターの接続ピン番号
 #define SERVO_PIN_X 13
@@ -13,6 +14,18 @@
 // 音声合成機能（VoiceText）の使用を有効化
 //#define USE_VOICE_TEXT //for M5STACK_Core2 Only
 
+//ランダムセリフ生成
+// 1. ランダムに選択する文字列を配列で定義
+const char* messages[] = {
+  "今日は何して遊んだの？",
+  "おなかがすいたよ～",
+  "眠くなってきちゃった・・・",
+  "一緒にゲームしよう",
+  "明日ははれるといいね",
+  "お散歩行こう"
+};
+const int MESSAGE_COUNT = sizeof(messages) / sizeof(messages[0]);
+
 #ifdef USE_VOICE_TEXT
 #include "AudioFileSourceBuffer.h"
 #include "AudioGeneratorMP3.h"
@@ -22,7 +35,6 @@
 // Wi-Fi接続用の情報（実際のSSIDとPASSWORDに置き換えてください）
 const char *SSID = "YOUR_WIFI_SSID";
 const char *PASSWORD = "YOUR_WIFI_PASSWORD";
-
 
 // 音声再生用オブジェクトの宣言
 AudioGeneratorMP3 *mp3;
@@ -204,6 +216,10 @@ void setup() {
   // タスクとして行動制御とサーボ制御をアバターへ追加
   avatar.addTask(behavior, "behavior");
   //avatar.addTask(servoloop, "servoloop");
+
+  // ランダムシードの初期化
+  // 未接続のアナログピン（A0）を読み取ることで擬似的な乱数シードを生成
+  randomSeed( esp_random() );
 }
 
 #ifdef USE_VOICE_TEXT
@@ -362,9 +378,29 @@ void loop() {
   }
   if (M5.BtnC.wasPressed())
   {
+
+    // 2. 乱数で配列のインデックスを選択
+    int idx = random(0, MESSAGE_COUNT);
+
+      // フィードバックトーン
+    M5.Speaker.tone(2000, 500);
+
+    //ふきだしの表示
+    avatar.setSpeechText(messages[idx]);
+    avatar.setExpression(Expression::Happy);
+
+    avatar.setMouthOpenRatio(0.7);
+    delay(3000);
+    avatar.setMouthOpenRatio(0);
+
+    //吹き出しをクリア
+    avatar.setSpeechText("");
+    avatar.setExpression(Expression::Neutral);
+    /*
     // ボタンCが押された場合の処理（顔2に切替）
     avatar.setFace(faces[2]);
     avatar.setColorPalette(*cps[2]);
+    */
   }
 #endif
 }
