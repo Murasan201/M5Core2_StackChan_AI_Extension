@@ -11,7 +11,7 @@
 #include "RamFace.h"         // ラムちゃんの顔データ
 
 // 音声合成機能（VoiceText）の使用を有効化
-#define USE_VOICE_TEXT //for M5STACK_Core2 Only
+//#define USE_VOICE_TEXT //for M5STACK_Core2 Only
 
 #ifdef USE_VOICE_TEXT
 #include "AudioFileSourceBuffer.h"
@@ -22,6 +22,7 @@
 // Wi-Fi接続用の情報（実際のSSIDとPASSWORDに置き換えてください）
 const char *SSID = "YOUR_WIFI_SSID";
 const char *PASSWORD = "YOUR_WIFI_PASSWORD";
+
 
 // 音声再生用オブジェクトの宣言
 AudioGeneratorMP3 *mp3;
@@ -80,6 +81,8 @@ void behavior(void *args)
 // ----------------------------------------------
 void servoloop(void *args)
 {
+  //仮でサーボ停止
+  return;
   float gazeX, gazeY;
   DriveContext *ctx = (DriveContext *)args;
   for (;;)
@@ -133,6 +136,9 @@ void setup() {
   servo_y.setEasingType(EASE_QUADRATIC_IN_OUT);
   // サーボ動作速度の設定
   setSpeedForAllServos(60);
+
+  //ふきだしに関する表示設定
+  avatar.setSpeechFont(&fonts::lgfxJapanGothic_12);
 
 #ifdef USE_VOICE_TEXT
   // ディスプレイの初期設定：明るさ、クリア、文字サイズ設定
@@ -193,11 +199,11 @@ void setup() {
 
   // アバターの初期化と初期設定（顔とパレットの割り当て）
   avatar.init(8);
-  avatar.setFace(faces[0]);
-  avatar.setColorPalette(*cps[0]);
+  avatar.setFace(faces[2]);
+  avatar.setColorPalette(*cps[2]);
   // タスクとして行動制御とサーボ制御をアバターへ追加
   avatar.addTask(behavior, "behavior");
-  avatar.addTask(servoloop, "servoloop");
+  //avatar.addTask(servoloop, "servoloop");
 }
 
 #ifdef USE_VOICE_TEXT
@@ -220,6 +226,11 @@ void VoiceText_tts(char *text, char *tts_parms) {
     mp3->begin(buff, out);
 }
 #endif
+
+//表情に応じてメッセージを生成
+char* GenText(int expression){
+
+}
 
 // ----------------------------------------------
 // メインループ：ユーザ入力に応じた処理を実行
@@ -248,6 +259,18 @@ void loop() {
   // ボタンBが押された場合の処理
   if (M5.BtnB.wasPressed())
   {
+    // フィードバックトーン
+    M5.Speaker.tone(2000, 500);
+  
+    // 吹き出し（セリフ）を画面に表示（背景は白、文字は黒）
+    displayDialogue("ゆいちゃん、こんにちは♪");
+
+    // 5秒間待機
+    delay(5000);
+
+    // セリフ領域をクリアして消去
+    clearDialogue();
+    /*
     // ボタンBに対応したフィードバックトーン
     M5.Speaker.tone(2000, 500);
     // 顔とカラーパレットを顔1（ラムちゃん）に切り替え
@@ -260,6 +283,8 @@ void loop() {
     // 再生完了後、表情をNeutralに戻す
     avatar.setExpression(Expression::Neutral);
     Serial.println("mp3 begin");
+    */
+    
   }
   // ボタンCが押された場合の処理
   if (M5.BtnC.wasPressed())
@@ -298,14 +323,40 @@ void loop() {
   // USE_VOICE_TEXTが無効の場合：ボタン押下により顔とカラーパレットのみ切替
   if (M5.BtnA.wasPressed())
   {
-    avatar.setFace(faces[0]);
-    avatar.setColorPalette(*cps[0]);
+    // フィードバックトーン
+    M5.Speaker.tone(2000, 500);
+
+    //ふきだしの表示
+    avatar.setSpeechText("ゆいちゃん、こんにちは");
+    avatar.setExpression(Expression::Happy);
+
+    avatar.setMouthOpenRatio(0.7);
+    delay(3000);
+    avatar.setMouthOpenRatio(0);
+
+    avatar.setSpeechText("");
+    avatar.setExpression(Expression::Neutral);
   }
   if (M5.BtnB.wasPressed())
   {
+    // フィードバックトーン
+    M5.Speaker.tone(2000, 500);
+
+    //ふきだしの表示
+    avatar.setSpeechText("ゆいちゃん、こんにちは");
+    avatar.setExpression(Expression::Happy);
+
+    avatar.setMouthOpenRatio(0.7);
+    delay(3000);
+    avatar.setMouthOpenRatio(0);
+
+    avatar.setSpeechText("");
+    avatar.setExpression(Expression::Neutral);
+    /*
     // ボタンBが押された場合の処理（顔1に切替）
     avatar.setFace(faces[1]);
     avatar.setColorPalette(*cps[1]);
+    */
   }
   if (M5.BtnC.wasPressed())
   {
