@@ -263,7 +263,7 @@ void loop() {
     M5.Speaker.tone(2000, 500);
   
     // 吹き出し（セリフ）を画面に表示（背景は白、文字は黒）
-    displayDialogue("ゆいちゃん、こんにちは♪");
+    displayDialogue("こんにちは");
 
     // 5秒間待機
     delay(5000);
@@ -327,13 +327,14 @@ void loop() {
     M5.Speaker.tone(2000, 500);
 
     //ふきだしの表示
-    avatar.setSpeechText("ゆいちゃん、こんにちは");
+    avatar.setSpeechText("こんにちは");
     avatar.setExpression(Expression::Happy);
 
     avatar.setMouthOpenRatio(0.7);
     delay(3000);
     avatar.setMouthOpenRatio(0);
 
+    //吹き出しをクリア
     avatar.setSpeechText("");
     avatar.setExpression(Expression::Neutral);
   }
@@ -343,13 +344,14 @@ void loop() {
     M5.Speaker.tone(2000, 500);
 
     //ふきだしの表示
-    avatar.setSpeechText("ゆいちゃん、こんにちは");
+    avatar.setSpeechText("今日は学校どうだった？");
     avatar.setExpression(Expression::Happy);
 
     avatar.setMouthOpenRatio(0.7);
     delay(3000);
     avatar.setMouthOpenRatio(0);
 
+    //吹き出しをクリア
     avatar.setSpeechText("");
     avatar.setExpression(Expression::Neutral);
     /*
