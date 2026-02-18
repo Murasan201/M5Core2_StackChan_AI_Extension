@@ -76,6 +76,7 @@
   The script serializes the arguments into the JSON format above, sends it (with newline), and waits for the Core2 `OK` reply before exiting.
 - A helper script may also support `--clear` to send `{ "clear": true }` or `--speech-font <font-name>` if the firmware exposes additional commands.
 - The script must handle failures (serial timeouts, parse errors) gracefully and report them to the caller.
+- For build/upload reference consult `docs/development-environment.md`, which covers `arduino-cli compile/upload` commands, required libraries, and the CP210x `/dev/ttyUSB0` connection.
 
 ## 6. Implementation information to collect
 1. The exact `Expression` enum names and their behavior (`m5stack-avatar/src/Expression.h` and the `Face`/`Effect` implementations already in this repo). (Collected: Happy/Angry/Sad/Doubt/Sleepy/Neutral.)
