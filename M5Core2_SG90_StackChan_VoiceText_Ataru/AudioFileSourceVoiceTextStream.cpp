@@ -1,3 +1,4 @@
+#ifdef USE_VOICE_TEXT
 /*
   AudioFileSourceVoiceTextStream
   Streaming VoiceText TTS source
@@ -203,3 +204,5 @@ uint32_t AudioFileSourceVoiceTextStream::getPos()
 }
 
 #endif
+
+#endif // USE_VOICE_TEXT

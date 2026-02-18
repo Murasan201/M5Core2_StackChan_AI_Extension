@@ -1,3 +1,4 @@
+#ifdef USE_VOICE_TEXT
 /*
   AudioFileSourceVoiceTextStream
   Streaming VoiceText TTS source
@@ -67,3 +68,5 @@ class AudioFileSourceVoiceTextStream : public AudioFileSource
 
 
 #endif
+
+#endif // USE_VOICE_TEXT

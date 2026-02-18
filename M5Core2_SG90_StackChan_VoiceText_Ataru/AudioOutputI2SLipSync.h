@@ -1,3 +1,4 @@
+#ifdef USE_VOICE_TEXT
 /*
   AudioOutputI2SLipSync
   Base class for an I2S output port
@@ -68,3 +69,5 @@ class AudioOutputI2SLipSync : public AudioOutput
     int aout_level;
 
 };
+
+#endif // USE_VOICE_TEXT

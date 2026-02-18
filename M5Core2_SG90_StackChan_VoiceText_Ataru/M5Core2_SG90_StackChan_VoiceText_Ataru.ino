@@ -16,7 +16,7 @@ constexpr size_t kJsonDocSize = 512;
 
 struct StackChanCommand {
   bool expressionSet = false;
-  Expression expression;
+  m5avatar::Expression expression;
   bool speechSet = false;
   String speech;
   bool faceSet = false;
@@ -28,7 +28,7 @@ struct StackChanCommand {
   bool clear = false;
 };
 
-bool parseExpression(const char *value, Expression &out);
+bool parseExpression(const char *value, m5avatar::Expression &out);
 bool parseCommand(const String &line, StackChanCommand &out, String &error);
 void applyCommand(const StackChanCommand &cmd);
 void clearSpeechText();
@@ -357,8 +357,7 @@ void applyCommand(const StackChanCommand &cmd) {
 void loop() {
   M5.update();
   if (Serial.available()) {
-    String line = Serial.readStringUntil('
-');
+    String line = Serial.readStringUntil('\n');
     line.trim();
     if (line.length() > 0) {
       StackChanCommand cmd;

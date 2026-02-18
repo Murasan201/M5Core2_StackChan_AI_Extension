@@ -19,8 +19,10 @@ void AtaruMouth::draw(M5Canvas *spi, BoundingRect rect, DrawContext *ctx) {
   uint16_t backgroundColor = ctx->getColorPalette()->get(COLOR_BACKGROUND);
   float breath = _min(1.0f, ctx->getBreath());
   float openRatio = ctx->getMouthOpenRatio();
-  Gaze g = ctx->getGaze();                    //
-  uint32_t offsetY = g.getVertical() * 10;    //
+  Gaze leftGaze = ctx->getLeftGaze();
+  Gaze rightGaze = ctx->getRightGaze();
+  float gazeVertical = (leftGaze.getVertical() + rightGaze.getVertical()) / 2.0f;
+  uint32_t offsetY = (uint32_t)(gazeVertical * 10);
   int h = minHeight + (maxHeight - minHeight) * openRatio;
   int w = minWidth + (maxWidth - minWidth) * (1 - openRatio);
   int x = rect.getLeft() - w / 2;

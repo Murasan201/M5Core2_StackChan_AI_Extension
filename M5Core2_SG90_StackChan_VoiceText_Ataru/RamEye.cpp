@@ -12,10 +12,13 @@ void RamEye::draw(M5Canvas *spi, BoundingRect rect, DrawContext *ctx) {
   Expression exp = ctx->getExpression();
   uint32_t x = rect.getCenterX();
   uint32_t y = rect.getCenterY();
-  Gaze g = ctx->getGaze();
-  float openRatio = ctx->getEyeOpenRatio();
-  uint32_t offsetX = g.getHorizontal() * 5;
-  uint32_t offsetY = g.getVertical() * 7;
+  Gaze leftGaze = ctx->getLeftGaze();
+  Gaze rightGaze = ctx->getRightGaze();
+  float gazeHorizontal = (leftGaze.getHorizontal() + rightGaze.getHorizontal()) / 2.0f;
+  float gazeVertical = (leftGaze.getVertical() + rightGaze.getVertical()) / 2.0f;
+  float openRatio = (ctx->getLeftEyeOpenRatio() + ctx->getRightEyeOpenRatio()) / 2.0f;
+  uint32_t offsetX = (uint32_t)(gazeHorizontal * 5);
+  uint32_t offsetY = (uint32_t)(gazeVertical * 7);
   uint16_t primaryColor = ctx->getColorPalette()->get(COLOR_PRIMARY);
   uint16_t backgroundColor = ctx->getColorPalette()->get(COLOR_BACKGROUND);
   if (openRatio > 0) {

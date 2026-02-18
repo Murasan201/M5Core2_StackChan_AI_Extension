@@ -12,13 +12,16 @@ void AtaruEye::draw(M5Canvas *spi, BoundingRect rect, DrawContext *ctx) {
   Expression exp = ctx->getExpression();
   uint32_t cx = rect.getCenterX();
   uint32_t cy = rect.getCenterY();
-  Gaze g = ctx->getGaze();
+  Gaze leftGaze = ctx->getLeftGaze();
+  Gaze rightGaze = ctx->getRightGaze();
+  float gazeHorizontal = (leftGaze.getHorizontal() + rightGaze.getHorizontal()) / 2.0f;
+  float gazeVertical = (leftGaze.getVertical() + rightGaze.getVertical()) / 2.0f;
   ColorPalette *cp = ctx->getColorPalette();
   uint16_t primaryColor = cp->get(COLOR_PRIMARY);
   uint16_t backgroundColor = ctx->getColorDepth() == 1 ? ERACER_COLOR : cp->get(COLOR_BACKGROUND);
-  uint32_t offsetX = g.getHorizontal() * 8;
-  uint32_t offsetY = g.getVertical() * 5;
-  float eor = ctx->getEyeOpenRatio();
+  uint32_t offsetX = (uint32_t)(gazeHorizontal * 8);
+  uint32_t offsetY = (uint32_t)(gazeVertical * 5);
+  float eor = (ctx->getLeftEyeOpenRatio() + ctx->getRightEyeOpenRatio()) / 2.0f;
 
   if (eor == 0) {
     // eye closed

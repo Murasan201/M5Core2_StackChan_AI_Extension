@@ -1,3 +1,4 @@
+#ifdef USE_VOICE_TEXT
 /*
   AudioOutputI2SLipSync
   Base class for I2S interface port
@@ -329,3 +330,5 @@ bool AudioOutputI2SLipSync::stop()
   i2sOn = false;
   return true;
 }
+
+#endif // USE_VOICE_TEXT
