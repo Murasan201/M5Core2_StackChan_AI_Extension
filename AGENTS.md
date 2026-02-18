@@ -18,3 +18,4 @@
 ## 追加メモ
 - 構想の中心は newline-delimited JSON コマンド（`expression`, `speech`, `face`, `palette`, `duration`, `clear`）を Pi から送り、Core2 が `OK`/`ERR` で応答すること。詳細は `docs/interface-requirements.md`。
 - 変更を加えたら `task_plan.md`/`progress.md`/`findings.md` に加え、`docs/journal.md`（作業ログ）と `docs/troubleshooting.md`（エラー/対処）も随時更新してください。トラブルシューティングは重要なナレッジなので漏れなく記録すること。
+- Follow the TDD rule in `RULES.md`: define tests in `docs/tests.md` before coding, execute them after changes, and flag results/errors there (and in `docs/troubleshooting.md`).
