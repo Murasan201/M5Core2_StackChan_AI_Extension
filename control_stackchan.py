@@ -68,8 +68,9 @@ def main():
 
     try:
         with serial.Serial(args.port, args.baud, timeout=0.1, rtscts=False, dsrdtr=False) as ser:
+            ser.flushInput()
             if args.file:
-                time.sleep(1)
+                time.sleep(2)
                 for line in args.file:
                     line = line.strip()
                     if not line:
@@ -86,7 +87,7 @@ def main():
                     time.sleep(args.delay)
             else:
                 command = build_command(args)
-                time.sleep(1)
+                time.sleep(3)
                 ok, resp = send_command(ser, command)
                 print(f"> {command} -> {resp}")
                 if not ok:

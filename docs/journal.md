@@ -10,3 +10,5 @@
 - Attempted to compile/upload the new firmware via `arduino-cli`, but the build fails due to mismatched Avatar library headers (`WiFiClient`, private `DrawContext` members). Documented this failure in `docs/troubleshooting.md` so future work can fix dependencies and run tests.
 - Logged all significant changes by creating this journal and a troubleshooting record.
 - Added `docs/dev-guide.md`, which catalogs the Raspberry Pi-to-Core2 development workflow, records the commands run so far, and sets the upcoming steps (building, testing, logging).
+- Enabled the USB serial console (`cfg.serial_baudrate = 115200`) and log every incoming JSON line (`Serial.print("RX: ")` + `Serial.println(...)`) so the CLI traffic is visible while debugging.
+- Adjusted `control_stackchan.py` (flush input, longer startup delay, no forced DTR) and now the CLI successfully receives `OK` for the test expression/duration commands, proving the parser is reachable.

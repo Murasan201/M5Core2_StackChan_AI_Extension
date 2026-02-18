@@ -152,7 +152,10 @@ void setup() {
 #endif
   // M5Stackの基本設定の取得と初期化
   auto cfg = M5.config();
+  cfg.serial_baudrate = 115200;
   M5.begin(cfg);
+  Serial.begin(115200);
+  Serial.println("Ready");
   
   // スピーカー設定（サンプルレートとモノラル設定）
   auto spk_config = M5.Speaker.config();
@@ -360,6 +363,8 @@ void loop() {
     String line = Serial.readStringUntil('\n');
     line.trim();
     if (line.length() > 0) {
+      Serial.print("RX: ");
+      Serial.println(line);
       StackChanCommand cmd;
       String error;
       if (parseCommand(line, cmd, error)) {
