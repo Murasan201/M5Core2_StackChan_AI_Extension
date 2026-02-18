@@ -37,6 +37,7 @@
   - `docs/interface-requirements.md`
   - `docs/troubleshooting.md`
   - `docs/tests.md`
+  - `docs/dev-guide.md`
 
 ## Test Results
 | Test | Input | Expected | Actual | Status |

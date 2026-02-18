@@ -43,6 +43,11 @@
 - Respond over serial with `OK` or `ERR <message>` so the Pi script can know when the command completes. Additional debugging logs (`Serial.printf("CMD parsed: %s\n", line.c_str());`) help trace issues.
 - Button handlers (`M5.BtnA/B/C`) and associated audio/dialogue sequences can be removed entirely.
 
+### Core2 dependency alignment plan
+- `AudioFileSourceVoiceTextStream.*` currently pulls in `WiFiClient`, so include `<WiFi.h>` in that header or provide a stub client to satisfy the dependency without requiring actual Wi-Fi connectivity. Remove or guard `VoiceText` code paths if Wi-Fi isn't used, keeping the serial parser lean.
+- The custom face drawing helpers (e.g., `AtaruEye.cpp`, `AtaruEyeblow.cpp`) rely on private `DrawContext` fields. Update these files to use the public getters or restructure them to avoid direct access (e.g., read `avatar.getExpression()` instead of `ctx->getGaze()`, and manage gaze internally in the parser). If necessary, add helper methods to `Avatar` via the forked `m5stack-avatar` sources rather than editing the public library.
+- Document these adjustments here so future maintainers understand the version alignment strategy: rely on the newest library APIs by adding compatible wrappers, rather than pinning to older commits.
+
 ### Pi-side CLI
 - A Python script (e.g., `control_stackchan.py`) opens `/dev/ttyUSB0` at 115200 bps and writes newline-delimited JSON commands built from CLI arguments (`--expression`, `--speech`, `--face`, `--palette`, `--duration`, `--clear`).
 - After sending each command, the script waits (1 s timeout) for an `OK`/`ERR` response, retrying or reporting failure on timeout.
