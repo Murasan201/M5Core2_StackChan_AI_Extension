@@ -30,10 +30,13 @@
   - Implemented the Core2 serial parser/gallery that reads newline-delimited JSON, maps commands to Avatar calls, and replies `OK/ERR`.
   - Added `control_stackchan.py` (pyserial-based CLI) to send expression/speech commands from `/dev/ttyUSB0`.
   - Confirmed documentation updates referencing the new script and development workflow guide.
+  - Attempted to compile/upload the firmware via `arduino-cli`; the build stops due to missing Avatar/WiFi constructs, so testing can't proceed until those dependencies align.
 - Files created/modified:
   - `M5Core2_SG90_StackChan_VoiceText_Ataru/M5Core2_SG90_StackChan_VoiceText_Ataru.ino`
   - `control_stackchan.py`
   - `docs/interface-requirements.md`
+  - `docs/troubleshooting.md`
+  - `docs/tests.md`
 
 ## Test Results
 | Test | Input | Expected | Actual | Status |

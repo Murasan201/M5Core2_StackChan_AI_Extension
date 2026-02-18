@@ -7,4 +7,5 @@
 - Added `control_stackchan.py` and documented how it serializes CLI arguments into JSON commands, waits for acknowledgements, and handles errors.
 - Updated planning files (`task_plan.md`, `progress.md`, `findings.md`) to reflect the new focus on the serial interface and to mark Phases 1-3 progress.
 - Linked the development workflow doc in `docs/interface-requirements.md` so implementers know how to build/upload via `arduino-cli`.
+- Attempted to compile/upload the new firmware via `arduino-cli`, but the build fails due to mismatched Avatar library headers (`WiFiClient`, private `DrawContext` members). Documented this failure in `docs/troubleshooting.md` so future work can fix dependencies and run tests.
 - Logged all significant changes by creating this journal and a troubleshooting record.

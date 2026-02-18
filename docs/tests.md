@@ -4,11 +4,11 @@ This project embraces test-driven development: before changing firmware or scrip
 
 | Date | Test Case | Target | Steps | Expected Outcome | Result / Notes |
 |------|-----------|--------|-------|------------------|----------------|
-| 2026-02-18 | Expression command | Core2 parser | 1. Launch firmware on Core2
+| 2026-02-18 | Expression command | Core2 parser | 1. Build/upload the latest firmware
 2. Run `python control_stackchan.py --expression Happy --face 2 --speech "こんにちは"`
-3. Observe serial ACK and display | Serial responds `OK`; avatar face 2 with Happy expression appears and speech bubble shows message | pending |
+3. Observe serial ACK and display | Build aborted: `Avatar.h` missing/reference errors (see troubleshooting) so firmware not running yet | blocked by build errors |
 | 2026-02-18 | Duration auto-clear | Core2 parser | 1. Send command with `--duration 2000`
-2. Observe speech bubble clears after ~2 s | Speech clears automatically, `avatar.setSpeechText` called with empty string | pending |
+2. Observe speech bubble clears after ~2 s | Pending | blocked until build succeeds |
 | 2026-02-18 | Clear flag | Core2 parser | 1. Show speech via Libray
 2. Send `{ "clear": true }` via `control_stackchan.py --clear`
 3. Confirm bubble empties and ACK received | Speech cleared instantly, `OK` returned | pending |
