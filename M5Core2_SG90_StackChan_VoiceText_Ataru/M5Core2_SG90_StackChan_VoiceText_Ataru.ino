@@ -10,6 +10,31 @@
 #include <ServoEasing.hpp>   // サーボのイージング動作用ライブラリ：https://github.com/ArminJo/ServoEasing
 #include "AtaruFace.h"       // あたるの顔データ
 #include "RamFace.h"         // ラムちゃんの顔データ
+#include <ArduinoJson.h>
+
+constexpr size_t kJsonDocSize = 512;
+
+struct StackChanCommand {
+  bool expressionSet = false;
+  Expression expression;
+  bool speechSet = false;
+  String speech;
+  bool faceSet = false;
+  int faceIndex = 0;
+  bool paletteSet = false;
+  int paletteIndex = 0;
+  bool durationSet = false;
+  unsigned long durationMs = 0;
+  bool clear = false;
+};
+
+bool parseExpression(const char *value, Expression &out);
+bool parseCommand(const String &line, StackChanCommand &out, String &error);
+void applyCommand(const StackChanCommand &cmd);
+void clearSpeechText();
+
+unsigned long speechClearTime = 0;
+bool speechPending = false;
 
 // 音声合成機能（VoiceText）の使用を有効化
 //#define USE_VOICE_TEXT //for M5STACK_Core2 Only
@@ -248,159 +273,106 @@ char* GenText(int expression){
 
 }
 
+bool parseExpression(const char *value, Expression &out) {
+  if (!value) return false;
+  if (strcmp(value, "Happy") == 0) { out = Expression::Happy; return true; }
+  if (strcmp(value, "Angry") == 0) { out = Expression::Angry; return true; }
+  if (strcmp(value, "Sad") == 0) { out = Expression::Sad; return true; }
+  if (strcmp(value, "Doubt") == 0) { out = Expression::Doubt; return true; }
+  if (strcmp(value, "Sleepy") == 0) { out = Expression::Sleepy; return true; }
+  if (strcmp(value, "Neutral") == 0) { out = Expression::Neutral; return true; }
+  return false;
+}
+
+bool parseCommand(const String &line, StackChanCommand &out, String &error) {
+  StaticJsonDocument<kJsonDocSize> doc;
+  DeserializationError err = deserializeJson(doc, line);
+  if (err) {
+    error = String(err.c_str());
+    return false;
+  }
+  if (doc.containsKey("expression")) {
+    const char *expr = doc["expression"];
+    if (parseExpression(expr, out.expression)) {
+      out.expressionSet = true;
+    } else {
+      error = "invalid expression";
+      return false;
+    }
+  }
+  if (doc.containsKey("speech")) {
+    out.speech = String((const char *)doc["speech"]);
+    out.speechSet = true;
+  }
+  if (doc.containsKey("face")) {
+    out.faceIndex = doc["face"].as<int>();
+    out.faceSet = true;
+  }
+  if (doc.containsKey("palette")) {
+    out.paletteIndex = doc["palette"].as<int>();
+    out.paletteSet = true;
+  }
+  if (doc.containsKey("duration")) {
+    out.durationMs = doc["duration"].as<unsigned long>();
+    out.durationSet = true;
+  }
+  if (doc.containsKey("clear")) {
+    out.clear = doc["clear"].as<bool>();
+  }
+  return true;
+}
+
+void clearSpeechText() {
+  avatar.setSpeechText("");
+  speechPending = false;
+  speechClearTime = 0;
+}
+
+void applyCommand(const StackChanCommand &cmd) {
+  if (cmd.faceSet && cmd.faceIndex >= 0 && cmd.faceIndex < 3) {
+    avatar.setFace(faces[cmd.faceIndex]);
+  }
+  if (cmd.paletteSet && cmd.paletteIndex >= 0 && cmd.paletteIndex < 3) {
+    avatar.setColorPalette(*cps[cmd.paletteIndex]);
+  }
+  if (cmd.expressionSet) {
+    avatar.setExpression(cmd.expression);
+  }
+  if (cmd.speechSet) {
+    avatar.setSpeechText(cmd.speech.c_str());
+    speechPending = false;
+  }
+  if (cmd.durationSet && cmd.durationMs > 0) {
+    speechPending = true;
+    speechClearTime = millis() + cmd.durationMs;
+  }
+  if (cmd.clear) {
+    clearSpeechText();
+  }
+}
+
 // ----------------------------------------------
-// メインループ：ユーザ入力に応じた処理を実行
+// メインループ：シリアルコマンドを受け取り、表情を更新
 // ----------------------------------------------
 void loop() {
-  // ボタンやタッチなどの状態更新
   M5.update();
-#ifdef USE_VOICE_TEXT
-  static int lastms = 0;
-  // ボタンAが押された場合の処理
-  if (M5.BtnA.wasPressed())
-  {
-    // スピーカーでトーンを鳴らしてフィードバック
-    M5.Speaker.tone(2000, 500);
-    // 顔とカラーパレットを顔0（あたる）に切り替え
-    avatar.setFace(faces[0]);
-    avatar.setColorPalette(*cps[0]);
-    delay(1000);
-    // 表情をHappyに変更してからTTSでメッセージ再生
-    avatar.setExpression(Expression::Happy);
-    VoiceText_tts(text1, tts_parms1);
-    // 再生後、表情をNeutralに戻す
-    avatar.setExpression(Expression::Neutral);
-    Serial.println("mp3 begin");
-  }
-  // ボタンBが押された場合の処理
-  if (M5.BtnB.wasPressed())
-  {
-    // フィードバックトーン
-    M5.Speaker.tone(2000, 500);
-  
-    // 吹き出し（セリフ）を画面に表示（背景は白、文字は黒）
-    displayDialogue("こんにちは");
-
-    // 5秒間待機
-    delay(5000);
-
-    // セリフ領域をクリアして消去
-    clearDialogue();
-    /*
-    // ボタンBに対応したフィードバックトーン
-    M5.Speaker.tone(2000, 500);
-    // 顔とカラーパレットを顔1（ラムちゃん）に切り替え
-    avatar.setFace(faces[1]);
-    avatar.setColorPalette(*cps[1]);
-    delay(1000);
-    // 表情をHappyにしてTTSでラムちゃんのメッセージを再生
-    avatar.setExpression(Expression::Happy);
-    VoiceText_tts(text2, tts_parms2);
-    // 再生完了後、表情をNeutralに戻す
-    avatar.setExpression(Expression::Neutral);
-    Serial.println("mp3 begin");
-    */
-    
-  }
-  // ボタンCが押された場合の処理
-  if (M5.BtnC.wasPressed())
-  {
-    // ボタンCに対応したフィードバックトーン
-    M5.Speaker.tone(2000, 500);
-    // 顔とカラーパレットを顔2（スタックちゃん）に切り替え
-    avatar.setFace(faces[2]);
-    avatar.setColorPalette(*cps[2]);
-    delay(1000);
-    // 表情をHappyに変更してTTSでスタックちゃんのメッセージを再生
-    avatar.setExpression(Expression::Happy);
-    VoiceText_tts(text3, tts_parms3);
-    // 再生完了後、表情をNeutralに戻す
-    avatar.setExpression(Expression::Neutral);
-    Serial.println("mp3 begin");
-  }
-  // mp3が再生中の場合の処理
-  if (mp3->isRunning()) {
-    // 1秒ごとに再生時間を出力（デバッグ用）
-    if (millis() - lastms > 1000) {
-      lastms = millis();
-      Serial.printf("Running for %d ms...\n", lastms);
-      Serial.flush();
-    }
-    // mp3の再生ループ。再生が終了した場合は停止処理を実施
-    if (!mp3->loop()) {
-      mp3->stop();
-      out->setLevel(0);
-      delete file;
-      delete buff;
-      Serial.println("mp3 stop");
+  if (Serial.available()) {
+    String line = Serial.readStringUntil('
+');
+    line.trim();
+    if (line.length() > 0) {
+      StackChanCommand cmd;
+      String error;
+      if (parseCommand(line, cmd, error)) {
+        applyCommand(cmd);
+        Serial.println("OK");
+      } else {
+        Serial.print("ERR ");
+        Serial.println(error);
+      }
     }
   }
-#else
-  // USE_VOICE_TEXTが無効の場合：ボタン押下により顔とカラーパレットのみ切替
-  if (M5.BtnA.wasPressed())
-  {
-    // フィードバックトーン
-    M5.Speaker.tone(2000, 500);
-
-    //ふきだしの表示
-    avatar.setSpeechText("こんにちは");
-    avatar.setExpression(Expression::Happy);
-
-    avatar.setMouthOpenRatio(0.7);
-    delay(3000);
-    avatar.setMouthOpenRatio(0);
-
-    //吹き出しをクリア
-    avatar.setSpeechText("");
-    avatar.setExpression(Expression::Neutral);
+  if (speechPending && speechClearTime != 0 && millis() >= speechClearTime) {
+    clearSpeechText();
   }
-  if (M5.BtnB.wasPressed())
-  {
-    // フィードバックトーン
-    M5.Speaker.tone(2000, 500);
-
-    //ふきだしの表示
-    avatar.setSpeechText("今日は学校どうだった？");
-    avatar.setExpression(Expression::Happy);
-
-    avatar.setMouthOpenRatio(0.7);
-    delay(3000);
-    avatar.setMouthOpenRatio(0);
-
-    //吹き出しをクリア
-    avatar.setSpeechText("");
-    avatar.setExpression(Expression::Neutral);
-    /*
-    // ボタンBが押された場合の処理（顔1に切替）
-    avatar.setFace(faces[1]);
-    avatar.setColorPalette(*cps[1]);
-    */
-  }
-  if (M5.BtnC.wasPressed())
-  {
-
-    // 2. 乱数で配列のインデックスを選択
-    int idx = random(0, MESSAGE_COUNT);
-
-      // フィードバックトーン
-    M5.Speaker.tone(2000, 500);
-
-    //ふきだしの表示
-    avatar.setSpeechText(messages[idx]);
-    avatar.setExpression(Expression::Happy);
-
-    avatar.setMouthOpenRatio(0.7);
-    delay(3000);
-    avatar.setMouthOpenRatio(0);
-
-    //吹き出しをクリア
-    avatar.setSpeechText("");
-    avatar.setExpression(Expression::Neutral);
-    /*
-    // ボタンCが押された場合の処理（顔2に切替）
-    avatar.setFace(faces[2]);
-    avatar.setColorPalette(*cps[2]);
-    */
-  }
-#endif
 }

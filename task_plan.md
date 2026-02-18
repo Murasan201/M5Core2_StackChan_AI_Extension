@@ -21,10 +21,11 @@ Phase 1
 - **Status:** pending
 
 ### Phase 3: Implementation
-- [ ] Write requirements document (docs/interface-requirements.md)
-- [ ] Include command examples, necessary Core2 functions, and notes about removing current button logic
-- [ ] List the information needed to implement firmware + Pi script (command parsing, serial port, dependencies)
-- **Status:** pending
+- [x] Write requirements document (docs/interface-requirements.md)
+- [x] Include command examples, necessary Core2 functions, and notes about removing current button logic
+- [x] List the information needed to implement firmware + Pi script (command parsing, serial port, dependencies)
+- [ ] Implement Core2 JSON parser and Pi CLI script
+- **Status:** in_progress
 
 ### Phase 4: Testing & Verification
 - [ ] Ensure doc references actual code sections (Avatar usage, serial port data)

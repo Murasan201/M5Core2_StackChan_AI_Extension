@@ -69,6 +69,7 @@
 
 ## 5. Host-side implementation notes (Raspberry Pi 5)
 - The Pi script should open `/dev/ttyUSB0` at 115200 bps (`SerialPort` shown by `arduino-cli board list`). If the CP210x driver exposes a different port, adapt accordingly.
+- A reference implementation lives in `control_stackchan.py`; it depends on `pyserial` and supports CLI arguments `--expression`, `--speech`, `--face`, `--palette`, `--duration`, and `--clear`.
 - Example Python CLI invocation:
   ```sh
   python control_stackchan.py --expression Happy --speech "こんにちは" --face 2 --duration 4000

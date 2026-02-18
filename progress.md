@@ -17,12 +17,22 @@
   - `progress.md` (this entry)
 
 ### Phase 2: Planning & Structure
+- **Status:** complete
+- Actions taken:
+  - Documented the JSON-based parser/protocol in `docs/interface-requirements.md` and linked the Pi-side script and upload guide.
+  - Captured the dependency decisions (lines of code, handshake requirements) in findings.
+- Files created/modified:
+  - `docs/interface-requirements.md`
+
+### Phase 3: Implementation
 - **Status:** in_progress
 - Actions taken:
-  - Decided to document the interface in `docs/interface-requirements.md`, covering the JSON protocol, Avatar API hooks, and Pi script expectations.
-  - Collected expression enum names (`Happy`, `Angry`, `Sad`, `Doubt`, `Sleepy`, `Neutral`) and Avatar methods (`setExpression`, `setSpeechText`, etc.) needed for implementation.
-  - Created the interface requirements document capturing protocol and implementation notes.
+  - Implemented the Core2 serial parser/gallery that reads newline-delimited JSON, maps commands to Avatar calls, and replies `OK/ERR`.
+  - Added `control_stackchan.py` (pyserial-based CLI) to send expression/speech commands from `/dev/ttyUSB0`.
+  - Confirmed documentation updates referencing the new script and development workflow guide.
 - Files created/modified:
+  - `M5Core2_SG90_StackChan_VoiceText_Ataru/M5Core2_SG90_StackChan_VoiceText_Ataru.ino`
+  - `control_stackchan.py`
   - `docs/interface-requirements.md`
 
 ## Test Results
