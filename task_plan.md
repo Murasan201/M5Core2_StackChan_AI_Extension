@@ -1,7 +1,7 @@
-# Task Plan: Document the Raspberry Pi 5 development setup for M5Core2_StackChan_AI_Extension
+# Task Plan: Define the Pi-driven StackChan control interface requirements
 
 ## Goal
-Document this Raspberry Pi 5 environment, including required tools, connection checks, build commands, and upload procedure for the M5Core2_StackChan_AI_Extension project so future contributors can develop and flash Core2 firmware from this machine.
+Capture the application requirements and implementation constraints for a Raspberry Pi 5 → M5Stack Core2 control interface that lets terminal scripts set expressions, speech bubbles, and visual cues on StackChan without button input.
 
 ## Current Phase
 Phase 1
@@ -9,43 +9,43 @@ Phase 1
 ## Phases
 
 ### Phase 1: Requirements & Discovery
-- [x] Understand user intent
-- [x] Identify constraints and requirements
+- [x] Understand user intent (Pi script-driven control)
+- [x] Identify existing Core2 behaviors and hardware context
 - [ ] Document findings in findings.md
 - **Status:** in_progress
 
 ### Phase 2: Planning & Structure
-- [ ] Define technical approach
-- [ ] Decide on document layout and key sections
-- [ ] Organize repository structure (docs/ or similar) if needed
+- [ ] Define how the Pi will communicate commands (serial protocol, data format)
+- [ ] Determine what Core2 APIs (Avatar expressions, speech text, display) need to be exposed
+- [ ] Choose documentation layout (requirements + implementation info)
 - **Status:** pending
 
 ### Phase 3: Implementation
-- [ ] Write the environment/communication summary
-- [ ] Detail build and upload steps specific to this Pi and repo
-- [ ] Include verification/notes on serial port availability
+- [ ] Write requirements document (docs/interface-requirements.md)
+- [ ] Include command examples, necessary Core2 functions, and notes about removing current button logic
+- [ ] List the information needed to implement firmware + Pi script (command parsing, serial port, dependencies)
 - **Status:** pending
 
 ### Phase 4: Testing & Verification
-- [ ] Ensure documentation matches commands run (lsusb, arduino-cli board list)
-- [ ] Vet the steps for accuracy and update progress.md with checks
-- [ ] Resolve any inconsistencies or missing instructions
+- [ ] Ensure doc references actual code sections (Avatar usage, serial port data)
+- [ ] Update progress.md with actions/tests/observations as we gather info
+- [ ] Confirm plan reflects all blockers or missing info
 - **Status:** pending
 
 ### Phase 5: Delivery
-- [ ] Verify documents are committed and indexed
-- [ ] Summarize deliverables for user handoff
-- [ ] Confirm README-index (if referenced) includes this doc
+- [ ] Commit artifacts (`docs/interface-requirements.md`, planning files)
+- [ ] Summarize findings for the user
+- [ ] Ensure README-index notes this new doc if needed
 - **Status:** pending
 
 ## Key Questions
-1. What serial devices, drivers, and ports are present on this Pi for the Core2 connection?
-2. Which toolchain and `arduino-cli` commands should we list so someone can build and upload from Raspberry Pi 5?
+1. What Avatar APIs (expressions, speech text, fonts) will the Core2 firmware expose to this interface?
+2. What command/serial protocol should the Pi script send to trigger expressions and balloons?
 
 ## Decisions Made
 | Decision | Rationale |
 |----------|-----------|
-| Produce a standalone Markdown how-to inside this repo (e.g., docs/dev-environment.md) | Keeps instructions versioned with firmware and accessible to future developers working inside this repository |
+| Keep a dedicated `docs/interface-requirements.md` | Captures requirements and info for future implementation without mixing with user-facing README |
 
 ## Errors Encountered
 | Error | Attempt | Resolution |
@@ -53,6 +53,6 @@ Phase 1
 |       | 1       |            |
 
 ## Notes
-- Update phase status as you progress: pending → in_progress → complete
-- Re-read this plan before major decisions
-- Log ALL errors and issues
+- Keep this plan up to date as we gather new info
+- Re-read before major decisions
+- Log ALL errors/issues immediately
