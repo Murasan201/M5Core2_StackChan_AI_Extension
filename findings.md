@@ -19,6 +19,7 @@
 | Document the requirements and interface in `docs/interface-requirements.md` | Provides a reusable reference for the upcoming firmware/script work without prematurely altering the sketch |
 | Define a newline-delimited JSON command protocol | Simple to parse on the ESP32, flexible, and easy for the Pi script to emit via standard JSON libraries |
 | Maintain `avatar.setSpeechFont(&fonts::lgfxJapanGothic_12)` and the existing palettes | Keeps the visual quality consistent while allowing the new commands to swap faces/palettes on demand |
+| Free the sketch from button-based compatibility constraints | Enables a clean parser implementation optimized for the Pi-driven workflow |
 
 ## Issues Encountered
 | Issue | Resolution |

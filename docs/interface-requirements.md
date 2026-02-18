@@ -31,7 +31,32 @@
 ` or `ERR <message>
 ` to let the script know the command parsed.
 
-## 4. Core2-side implementation notes
+## 4. Parser and protocol design
+
+### Compatibility policy
+- We do **not** preserve compatibility with the existing button-driven sketch. Functionality and performance take priority, so rewrites and refactors are acceptable.
+
+### Core2-side parser
+- `loop()` continues to call `M5.update()` but now also checks `Serial.available()` at 115200 bps. Incoming lines (`Serial.readStringUntil('\n')`) are parsed as JSON using ArduinoJson (or a tailored parser).
+- Supported fields: `expression`, `speech`, `face`, `palette`, `duration`, `clear`. Expressions map to `m5avatar::Expression` enum (`Happy`, `Angry`, `Sad`, `Doubt`, `Sleepy`, `Neutral`). Face/palette indices select the prebuilt `faces[0..2]`/`cps[0..2]` entries initialized in `setup()`.
+- Handler logic: on parsed command, call `avatar.setExpression(...)`, `avatar.setFace(...)`, `avatar.setColorPalette(...)`, `avatar.setSpeechText(...)`, update `avatar.setMouthOpenRatio(...)` if desired, and start/reset a timer for `duration`. If `clear` is true or `duration` elapses, clear the speech text.
+- Respond over serial with `OK` or `ERR <message>` so the Pi script can know when the command completes. Additional debugging logs (`Serial.printf("CMD parsed: %s\n", line.c_str());`) help trace issues.
+- Button handlers (`M5.BtnA/B/C`) and associated audio/dialogue sequences can be removed entirely.
+
+### Pi-side CLI
+- A Python script (e.g., `control_stackchan.py`) opens `/dev/ttyUSB0` at 115200 bps and writes newline-delimited JSON commands built from CLI arguments (`--expression`, `--speech`, `--face`, `--palette`, `--duration`, `--clear`).
+- After sending each command, the script waits (1 s timeout) for an `OK`/`ERR` response, retrying or reporting failure on timeout.
+- Example usage:
+  ```sh
+  python control_stackchan.py \
+    --expression Happy \
+    --speech "こんにちは" \
+    --face 2 \
+    --duration 4000
+  ```
+- The script can accept macros (batch files or JSON command sequences) for scripted interactions and can expose `--clear` or `--voice-text` flags if the firmware supports them later.
+
+## 5. Core2-side implementation notes
 - The firmware already initializes `Avatar avatar;`, loads three faces (`AtaruFace`, `RamFace`, `avatar.getFace()`), and builds three `ColorPalette` objects. The new interface will reuse those resources.
 - Expression manipulation is handled by the `m5avatar::Avatar` API:
   * `avatar.setExpression(Expression::Happy)` etc. Expression enum values are defined in `m5stack-avatar/src/Expression.h` (`Happy`, `Angry`, `Sad`, `Doubt`, `Sleepy`, `Neutral`).
