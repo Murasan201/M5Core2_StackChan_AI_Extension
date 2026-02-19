@@ -17,6 +17,9 @@ This project embraces test-driven development: before changing firmware or scrip
 2. Send `python control_stackchan.py --face 1 --expression Happy --speech "Ram Face" --duration 3000`
 3. Send `python control_stackchan.py --face 2 --expression Happy --speech "StackChan Face" --duration 3000`
 4. Observe each face renders (Ataru, Ram, StackChan) and `OK` ack follows every command | CLI prints `OK` for all three commands while Core2 logs `RX:` for each, confirming the parser accepts every face selection. | pass (faces changed visually) |
+| 2026-02-19 | StackChan expressions only | Core2 parser | 1. Send `python control_stackchan.py --face 2 --expression Happy --speech "StackChan Happy" --duration 2000`  
+2. Repeat with `Angry`, `Sad`, `Doubt`, `Sleepy`, `Neutral` while always targeting face `2`  
+3. Verify the Core2 `Serial` log shows `RX:` per command and the CLI reports `OK` each time | Every expression command responds with `OK` and the StackChan face visibly changes per expression (Happy, Angry, Sad, Doubt, Sleepy, Neutral). | pass (all expressions acknowledged) |
 | Future | Batch scenario | CLI script | Create JSON file, call `control_stackchan.py --file file.json` with multiple commands | Each command acknowledged; final state matches script| pending |
 
 *Update this table before making changes, and move entries to "pass"/"fail" once executed.*

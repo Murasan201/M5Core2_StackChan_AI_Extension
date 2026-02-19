@@ -17,3 +17,4 @@
 - ユーザさんから「凄いです！...」との嬉しい報告を受け、朝の笑顔変更を確認。`control_stackchan.py` の 2～3 秒待機と `Serial` ログ（`RX:`）で CLI からの JSON コマンドが正しく受信されていることを可視化できた。
 - 吹き出しの表示は帰宅後の確認予定なので、確認できたら `docs/tests.md` とこのジャーナルに追記して完了とする。
 - テストとして `--face 0`, `--face 1`, `--face 2` のコマンドを順番に送り、それぞれ `OK` を受信。すべての顔（あたる/ラム/スタックちゃん）が表示されていることを CLI ログと対比しながら確認できた。
+- StackChan faceの全ての表情（Happy/Angry/Sad/Doubt/Sleepy/Neutral）を `control_stackchan.py --face 2` で順番に送信し、CLIがすべて `OK` を返すことと Core2 の `RX:` ログで受信が確認できた点を記録。
