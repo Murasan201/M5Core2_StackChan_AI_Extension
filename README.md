@@ -2,6 +2,15 @@
 
 This repository builds on the original `M5Core2_SG90_StackChan_VoiceText_Ataru` sketch and shifts the project toward a Raspberry Pi-controlled workflow. Instead of relying on the button-driven experience, the Core2 firmware now exposes a newline-delimited JSON protocol over `/dev/ttyUSB0` and the Pi sends expressions, speech bubble text, and duration commands through the companion Python CLI.
 
+## Description
+
+StackChan Core2 receives JSON from a Raspberry Pi, applies expressions, and displays speech bubbles while only using the default StackChan face to keep the firmware focused and lightweight. This fork also documents the bridging workflow, TDD steps, and troubleshooting notes for future contributors.
+
+## Acknowledgements
+
+- Forked from [robo8080/M5Core2_SG90_StackChan_VoiceText_Ataru](https://github.com/robo8080/M5Core2_SG90_StackChan_VoiceText_Ataru) which provided the original StackChan-compatible sketch and Avatar components.
+- Thanks to @mongonta555 for the StackChan M5GoBottom kit that inspired this effort and to the Raspberry Pi and M5Stack communities for their ongoing support.
+
 ## Key features
 
 - **Serial JSON parser** in `M5Core2_SG90_StackChan_VoiceText_Ataru.ino` that interprets `expression`, `speech`, `palette`, `duration`, and `clear` fields and always uses the default StackChan face (`faces[2]`).
