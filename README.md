@@ -1,63 +1,39 @@
-# M5Core2\_SG90\_StackChan\_VoiceText\_Ataru (フォーク版 · 改良 by Murasan201)
+# StackChan Core2 JSON Interface
 
-このリポジトリは、元々 [M5Core2\_SG90\_StackChan\_VoiceText\_Ataru](https://github.com/robo8080/M5Core2_SG90_StackChan_VoiceText_Ataru)（@robo8080様作）のプロジェクトをMurasan201がフォークし、改良を加えたものです。\
-本フォーク版では、以下の点を中心に改善を行っています。
+This repository builds on the original `M5Core2_SG90_StackChan_VoiceText_Ataru` sketch and shifts the project toward a Raspberry Pi-controlled workflow. Instead of relying on the button-driven experience, the Core2 firmware now exposes a newline-delimited JSON protocol over `/dev/ttyUSB0` and the Pi sends expressions, speech bubble text, and duration commands through the companion Python CLI.
 
-- **コンパイルスイッチの削除**\
-  Arduino IDE 2.3.6では未定義の `M5STACK_CORE2` ハードウェア識別子に対応するため、不要なコンパイルスイッチを削除しました。
-- **日本語コメントの追加**\
-  コード内に日本語のコメントを加えることで、可読性・保守性を向上させました。
-- **その他微調整**\
-  パフォーマンスおよび安定性の向上のため、その他細かな改善を施しています。
+## Key features
 
+- **Serial JSON parser** in `M5Core2_SG90_StackChan_VoiceText_Ataru.ino` that interprets `expression`, `speech`, `palette`, `duration`, and `clear` fields and always uses the default StackChan face (`faces[2]`).
+- **Python CLI (`control_stackchan.py`)** that encodes CLI flags into JSON, opens `/dev/ttyUSB0` at 115200 bps, waits for the `OK` handshake, and reports a failure when `ERR` or a timeout occurs.
+- **Documentation suite** covering development setup, interface requirements, testing rituals, and troubleshooting notes (see `docs/README.md` for the doc index).
+- **TDD logging** under `docs/tests.md` plus a running `docs/journal.md` that summarizes what was attempted and what worked on each day.
 
+## Getting started
 
----
+1. **Install toolchain & libs** (per `docs/development-environment.md`):
+   ```sh
+   arduino-cli core update-index
+   arduino-cli core install esp32:esp32@3.3.7
+   arduino-cli lib install "M5Unified" "ServoEasing" "ESP32Servo" "ESP8266Audio" "ArduinoJson"
+   # Copy / sync `m5stack-avatar` sources into ~/Arduino/libraries/M5Stack-Avatar
+   ```
+2. **Build & upload** the firmware:
+   ```sh
+   arduino-cli compile --fqbn esp32:esp32:m5stack_core2 M5Core2_SG90_StackChan_VoiceText_Ataru/M5Core2_SG90_StackChan_VoiceText_Ataru.ino
+   arduino-cli upload --fqbn esp32:esp32:m5stack_core2 --port /dev/ttyUSB0 M5Core2_SG90_StackChan_VoiceText_Ataru/M5Core2_SG90_StackChan_VoiceText_Ataru.ino
+   ```
+3. **Use the CLI**:
+   ```sh
+   python3 control_stackchan.py \
+     --expression Happy \
+     --speech "Hello StackChan" \
+     --palette 2 \
+     --duration 3000
+   ```
+   The script waits for `OK` before exiting; any timeout or `ERR` is surfaced so the caller can re-run tests.
+4. **Verify** the display, expressions, and bubble timing manually, then log the outcome in `docs/tests.md` and update `docs/journal.md`.
 
-## プロジェクト概要
+## Documentation
 
-本プロジェクトは、@mongonta555さんが頒布を開始した [スタックチャン M5GoBottom版組み立てキット](https://raspberrypi.mongonta.com/about-products-stackchan-m5gobottom-version/ "スタックチャン M5GoBottom") に対応するファームウェアとして開発されました。\
-オリジナルプロジェクトの機能を踏襲しつつ、上記の改善点によって使い勝手を向上させています。
-
----
-
-## ビルド環境と必要なライブラリ
-
-以下の環境およびライブラリのバージョンで動作確認を行っています。\
-※ 環境設定やバージョンが異なる場合、ビルドや動作に支障が生じる可能性があります。
-
-- **Arduino IDE:** バージョン 2.3.6
-- **M5Unifiedライブラリ:** v0.0.7
-- **M5Stack-Avatarライブラリ:** v0.8.1
-- **ServoEasingライブラリ:** v2.4.0
-- **ESP32Servoライブラリ:** v0.9.0
-- **ESP8266Audioライブラリ:** v1.9.7
-
-
-
----
-
-## オリジナルプロジェクトについて
-
-本プロジェクトは、[@robo8080](https://github.com/robo8080/M5Core2_SG90_StackChan_VoiceText_Ataru) さんのオリジナル実装に基づいています。\
-オリジナルのREADMEや詳細な説明は、上記リンク先のリポジトリをご参照ください。
-
----
-
-## 本フォーク版の主な改良点
-
-私 **Murasan201** によるこのフォーク版では、以下の改善を行っています。
-
-- **コンパイルスイッチの削除:**\
-  Arduino IDE 2.3.6では定義されていない `M5STACK_CORE2` 用のコンパイルスイッチを削除しました。
-- **日本語コメントの追加:**\
-  コード内に日本語での注釈を追加することで、理解しやすく、保守しやすい実装になっています。
-- **その他の改善:**\
-  パフォーマンスや安定性の向上に向けた細部の改善を実施しています。
-
----
-
-## ライセンス
-
-本プロジェクトは、オリジナルプロジェクトと同様に [MITライセンス](LICENSE) の下で提供されています。
-
+The `docs/` folder contains the development guide, interface requirements, working journal, troubleshooting log, and test matrix. A Japanese-language index lives at `docs/README.md` for quick navigation.
