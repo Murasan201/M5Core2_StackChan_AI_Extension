@@ -12,3 +12,7 @@
 - Added `docs/dev-guide.md`, which catalogs the Raspberry Pi-to-Core2 development workflow, records the commands run so far, and sets the upcoming steps (building, testing, logging).
 - Enabled the USB serial console (`cfg.serial_baudrate = 115200`) and log every incoming JSON line (`Serial.print("RX: ")` + `Serial.println(...)`) so the CLI traffic is visible while debugging.
 - Adjusted `control_stackchan.py` (flush input, longer startup delay, no forced DTR) and now the CLI successfully receives `OK` for the test expression/duration commands, proving the parser is reachable.
+
+## 2026-02-19
+- ユーザさんから「凄いです！...」との嬉しい報告を受け、朝の笑顔変更を確認。`control_stackchan.py` の 2～3 秒待機と `Serial` ログ（`RX:`）で CLI からの JSON コマンドが正しく受信されていることを可視化できた。
+- 吹き出しの表示は帰宅後の確認予定なので、確認できたら `docs/tests.md` とこのジャーナルに追記して完了とする。

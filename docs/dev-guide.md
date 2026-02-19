@@ -27,13 +27,13 @@
 - [x] Implemented the serial JSON parser in the sketch and created `control_stackchan.py`.
 - [x] Added TDD guidance and interim tests in `docs/tests.md`.
 - [x] Logged troubleshooting notes about patch/compile issues and built the `arduino-cli` toolchain.
-- [ ] Fix `WiFiClient`/`DrawContext` build errors (current blocking issue).
+- [x] Fixed `WiFiClient`/`DrawContext` build errors by gating VoiceText and refactoring the Ataru/Ram helpers.
+- [x] Confirmed CLI handshake recovery via `control_stackchan.py` (longer delay, flush input, no forced DTR) and USB serial logging.
 
 ## 4. 今後の手順（Next steps）
-1. **Build fix**：`AudioFileSourceVoiceTextStream` に `<WiFi.h>`, `Ataru*` ソースに `DrawContext` 互換処理を追加または `Avatar` のメソッドを使う。エラーを `docs/troubleshooting.md` に追記しつつ進める。
-2. **Rebuild**：`arduino-cli compile --fqbn esp32:esp32:m5stack_core2 ...` でビルド、続けて `arduino-cli upload ...` で Core2 に書き込み。
-3. **Run tests**：`control_stackchan.py` で commands を送り、`docs/tests.md` に結果を記入（pass/fail）。失敗があれば詳細をトラブルシュートに記録。
-4. **Verification**：画面で表情/吹き出しの変化を確認し、記録を `docs/journal.md` にまとめる。
+1. **Verify display behavior**：`control_stackchan.py` の `--expression`/`--duration` コマンドで Core2 の顔と吹き出しが期待どおり変化しているかを確認し、起動直後の `Serial` 出力と合わせて記録。
+2. **Document bubble timing**：吹き出しの自動消去や `duration` の反応にばらつきがあれば `docs/troubleshooting.md` へ記録し、必要なら `control_stackchan.py` の `--delay` やスクリプト側の再送タイミングを調整。
+3. **Hands-off share**：このガイド/`docs/interface-requirements.md`/`docs/tests.md` に手順・コマンド・確認事項をまとめ、将来の担当者が同じ順序で再現できるようにする。
 
 ## 5. Tips & Notes
 - Use `python -m pip install pyserial` inside the Pi environment if `control_stackchan.py` needs dependencies.
