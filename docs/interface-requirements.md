@@ -38,7 +38,7 @@
 
 ### Core2-side parser
 - `loop()` continues to call `M5.update()` but now also checks `Serial.available()` at 115200 bps. Incoming lines (`Serial.readStringUntil('\n')`) are parsed as JSON using ArduinoJson (or a tailored parser).
-- Supported fields: `expression`, `speech`, `face`, `palette`, `duration`, `clear`. Expressions map to `m5avatar::Expression` enum (`Happy`, `Angry`, `Sad`, `Doubt`, `Sleepy`, `Neutral`). Face/palette indices select the prebuilt `faces[0..2]`/`cps[0..2]` entries initialized in `setup()`.
+- Supported fields: `expression`, `speech`, `palette`, `duration`, `clear`. Expressions map to `m5avatar::Expression` enum (`Happy`, `Angry`, `Sad`, `Doubt`, `Sleepy`, `Neutral`). The only face actively used in this project is the default StackChan face (`faces[2]`/`avatar.getFace()`); Ataru/Ram faces stay in the source but are currently commented out.“
 - Handler logic: on parsed command, call `avatar.setExpression(...)`, `avatar.setFace(...)`, `avatar.setColorPalette(...)`, `avatar.setSpeechText(...)`, update `avatar.setMouthOpenRatio(...)` if desired, and start/reset a timer for `duration`. If `clear` is true or `duration` elapses, clear the speech text.
 - Respond over serial with `OK` or `ERR <message>` so the Pi script can know when the command completes. Additional debugging logs (`Serial.printf("CMD parsed: %s\n", line.c_str());`) help trace issues.
 - Button handlers (`M5.BtnA/B/C`) and associated audio/dialogue sequences can be removed entirely.

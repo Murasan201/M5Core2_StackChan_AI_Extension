@@ -217,21 +217,21 @@ void setup() {
 #endif
 
   // 顔データとカラーパレットの初期化
-  faces[0] = new AtaruFace();
-  faces[1] = new RamFace();
+  //faces[0] = new AtaruFace();
+  //faces[1] = new RamFace();
   faces[2] = avatar.getFace();
-  cps[0] = new ColorPalette();
-  cps[1] = new ColorPalette();
+  //cps[0] = new ColorPalette();
+  //cps[1] = new ColorPalette();
   cps[2] = new ColorPalette();
 
   // カラーパレットの設定（各顔の配色）
-  cps[0]->set(COLOR_PRIMARY, TFT_BLACK);
-  cps[0]->set(COLOR_BACKGROUND, TFT_WHITE);
-  cps[0]->set(COLOR_SECONDARY, TFT_WHITE);
+  //cps[0]->set(COLOR_PRIMARY, TFT_BLACK);
+  //cps[0]->set(COLOR_BACKGROUND, TFT_WHITE);
+  //cps[0]->set(COLOR_SECONDARY, TFT_WHITE);
   
-  cps[1]->set(COLOR_PRIMARY, TFT_BLACK);
-  cps[1]->set(COLOR_BACKGROUND, TFT_WHITE);
-  cps[1]->set(COLOR_SECONDARY, TFT_WHITE);
+  //cps[1]->set(COLOR_PRIMARY, TFT_BLACK);
+  //cps[1]->set(COLOR_BACKGROUND, TFT_WHITE);
+  //cps[1]->set(COLOR_SECONDARY, TFT_WHITE);
   
   cps[2]->set(COLOR_PRIMARY, TFT_WHITE);
   cps[2]->set(COLOR_BACKGROUND, TFT_BLACK);
